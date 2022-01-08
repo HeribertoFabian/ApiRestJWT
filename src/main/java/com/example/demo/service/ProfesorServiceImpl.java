@@ -31,7 +31,7 @@ public class ProfesorServiceImpl implements IProfesorService{
 	@Override
 	@Transactional(readOnly = true)
 	public Profesor checkProfesorLogin(Profesor profesor) {
-		return profesorDao.findByEmailAndPassword(profesor.getEmail(), profesor.getPassword());
+		return (Profesor) profesorDao.findByEmailAndPassword(profesor.getEmail(), profesor.getPassword());
 	}
 
 	@Override
@@ -75,6 +75,13 @@ public class ProfesorServiceImpl implements IProfesorService{
 	@Transactional
 	public void save(Profesor profesor) {
 		profesorDao.save(profesor);		
+	}
+
+	@Override
+	@Transactional
+	public void deleteAllProfesor() {
+		profesorDao.deleteAll();
+		
 	}
 	
 
