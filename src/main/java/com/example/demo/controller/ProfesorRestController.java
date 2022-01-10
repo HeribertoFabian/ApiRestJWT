@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entity.Profesor;
+import com.example.demo.mapper.Mapper;
+import com.example.demo.model.MProfesor;
 import com.example.demo.service.IProfesorService;
 
 @RestController
@@ -51,7 +53,8 @@ public class ProfesorRestController {
 			profesorDb.setEmail(profesor.getEmail());
 			profesorDb.setNombre(profesor.getNombre());
 			profesorService.updateProfesor(profesorDb);
-			return new ResponseEntity<>(profesorDb, HttpStatus.OK);
+			MProfesor profeResponse = new MProfesor(profesorDb);
+			return new ResponseEntity<>(profeResponse, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
@@ -66,7 +69,8 @@ public class ProfesorRestController {
 			profesorDb.setEmail(profesor.getEmail());
 			profesorDb.setNombre(profesor.getNombre());
 			profesorService.updateProfesor(profesorDb);
-			return new ResponseEntity<>(profesorDb, HttpStatus.OK);
+			MProfesor profeResponse = new MProfesor(profesorDb);
+			return new ResponseEntity<>(profeResponse, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
 		}
@@ -104,8 +108,9 @@ public class ProfesorRestController {
 	@PostMapping("find_profesor")
 	public ResponseEntity<?> findProfesor(@RequestBody Profesor profesor){
 		Profesor profesorDb = profesorService.findProfesor(profesor);
+		MProfesor profesorResponse = new MProfesor(profesor);
 		if(profesorDb != null) {
-			return new ResponseEntity<>(profesorDb, HttpStatus.OK);
+			return new ResponseEntity<>(profesorResponse, HttpStatus.OK);
 		}
 		else {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -116,7 +121,12 @@ public class ProfesorRestController {
 	public ResponseEntity<?> loginProfesor(@RequestBody Profesor profesor){
 		Profesor profesorDb = profesorService.checkProfesorLogin(profesor);
 		if(profesorDb != null) {
-			return new ResponseEntity<>(profesorDb, HttpStatus.OK);
+			List<Profesor> profesores = new ArrayList<>();
+			profesores.add(profesorDb);
+			List<MProfesor> mprofesores = new ArrayList<>();
+			mprofesores = Mapper.convertirLista(profesores);
+			
+			return new ResponseEntity<>(mprofesores, HttpStatus.OK);
 		}else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
